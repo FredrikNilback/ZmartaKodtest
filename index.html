@@ -1,0 +1,89 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="stylesheet" href="main.css">
+
+    <title>Calculator</title>
+</head>
+<body>
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<div id="app">
+    <div v-if="!applied">
+        <div class="monthly-cost">
+            <div class="monthly-cost-label">
+                {{ labels.monthlyCostLabel }}
+            </div>
+            <div class="monthly-cost-value">
+                {{ monthlyCost.toLocaleString('sv') }} {{labels.monthlyCostSuffix}}
+            </div>
+        </div>
+        <div class="amount">
+            <div class="amount-label">
+                {{ labels.loanAmountLabel }}
+            </div>
+            <div class="modifiers">
+                <button v-on:click="decreaseAmount" class="calculator-button">
+                    <span>-</span>
+                </button>
+
+                <input v-model="amount" class="amount-value" readonly>
+
+                <button v-on:click="addAmount" class="calculator-button">
+                    <span>+</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="years">
+            <div class="years-label">
+                {{ labels.repaymentYearsLabel }}
+            </div>
+
+            <div class="modifiers">
+                <button v-on:click="decreaseYears" class="calculator-button">
+                    <span>-</span>
+                </button>
+
+                <input v-model="years" class="repayment-value" readonly>
+
+                <button v-on:click="addYears" class="calculator-button">
+                    <span>+</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="calculator">
+            <button v-on:click="submit" class="calculator-button">
+                {{ labels.ctaLabel }}
+                <i class="arrow right"></i>
+            </button>
+        </div>
+    </div>
+    <div v-else>
+        <div v-if="error !== null">
+            <p>{{ error }}</p>
+        </div>
+        <div v-else>
+            <div v-if="applying" class="loader"><div class="spinner lds-dual-ring"></div></div>
+            <div v-if="lenderResponses && !lenderResponses.length">
+                <p>No banks replied with an offer</p>
+            </div>
+            <div v-for="(lender, i) in lenderResponses" :key="i">
+                <p>{{ lender.name }}</p>
+                <p>{{ lender.response }}</p>
+                <hr>
+            </div>
+        </div>
+        <button class="btn-back" @click="error = null; applied = false; lenderResponses = null;">Tillbaka</button>
+    </div>
+</div>
+
+<script src="main.js"></script>
+
+</body>
+</html>
